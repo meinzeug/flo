@@ -34,3 +34,4 @@
 - Added check in run_flo.main to print help when no command provided.
 - Now running "python3 run_flo.py" shows help instead of error.
 \n### Fix openrouter timeout\n- Modified openrouter_client.generate_document to stream response with 10s timeout and return placeholder text on failure.
+\n### 2025-07-27 Run test\n- Executed run_flo.py and tested ProjectManager menu.\n- Network requests to openrouter timed out; placeholder text used.\n- No Python errors during startup or menu operations.\n
