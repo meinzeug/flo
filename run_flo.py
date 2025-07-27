@@ -16,13 +16,13 @@ from typing import List, Optional
 
 from prompt_toolkit.application import Application, run_in_terminal
 from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.layout import Layout, HSplit
+from prompt_toolkit.layout import Layout, HSplit, VSplit
 from prompt_toolkit.shortcuts import (
     input_dialog,
     message_dialog,
     radiolist_dialog,
 )
-from prompt_toolkit.widgets import MenuContainer, MenuItem, TextArea
+from prompt_toolkit.widgets import TextArea, RadioList, Frame, Box
 
 from setup_manager import SetupManager
 from claude_flow_cli import ClaudeFlowCLI
@@ -84,7 +84,6 @@ class FloTUI:
         )
         self.output = TextArea(style="class:output", scrollbar=True, focusable=True)
         self.status = TextArea(height=1, text="Ready", style="reverse")
-        body = HSplit([self.header, self.output, self.status])
 
         kb = KeyBindings()
 
@@ -97,33 +96,30 @@ class FloTUI:
         def _(event) -> None:
             event.app.exit()
 
-        menu_items = [
-            MenuItem(
-                "Project",
-                children=[
-                    MenuItem("Create", handler=self.create_project),
-                    MenuItem("List", handler=self.list_projects),
-                ],
-            ),
-            MenuItem(
-                "Hive",
-                children=[
-                    MenuItem("Spawn", handler=self.spawn_hive),
-                    MenuItem("Status", handler=self.hive_status),
-                    MenuItem("Sessions", handler=self.hive_sessions),
-                ],
-            ),
-            MenuItem(
-                "Advanced",
-                children=[
-                    MenuItem("Project Manager", handler=self.launch_manager_menu),
-                ],
-            ),
-            MenuItem("Exit", handler=lambda: self.app.exit()),
-        ]
+        self.menu = RadioList(
+            [
+                ("create", "Create project"),
+                ("list", "List projects"),
+                ("spawn", "Hive spawn"),
+                ("status", "Hive status"),
+                ("sessions", "Hive sessions"),
+                ("advanced", "Advanced menu"),
+                ("exit", "Exit"),
+            ]
+        )
 
-        self.container = MenuContainer(body=body, menu_items=menu_items, key_bindings=kb)
-        self.app = Application(layout=Layout(self.container), full_screen=True, key_bindings=kb)
+        @kb.add("enter")
+        def _(event) -> None:
+            self.handle_choice(self.menu.current_value)
+
+        menu_frame = Frame(self.menu, title="Menu", width=24)
+        body = VSplit([
+            menu_frame,
+            Box(self.output, padding=1, style="class:output"),
+        ])
+        layout = Layout(HSplit([self.header, body, self.status]))
+
+        self.app = Application(layout=layout, full_screen=True, key_bindings=kb)
 
     # ------------------------------------------------------------------
     # Utility helpers
@@ -138,13 +134,32 @@ class FloTUI:
                 except Exception as exc:  # pragma: no cover - runtime feedback only
                     print(f"[Error] {exc}")
             text = buf.getvalue()
-            self.app.call_from_executor(lambda: self.output.buffer.insert_text(text))
+            def update() -> None:
+                self.output.buffer.insert_text(text)
+                self.status.text = "Ready"
+            self.app.call_from_executor(update)
 
         threading.Thread(target=worker, daemon=True).start()
 
     def _info(self, text: str) -> None:
         self.status.text = text
         self.app.invalidate()
+
+    def handle_choice(self, choice: str | None) -> None:
+        if choice == "create":
+            self.create_project()
+        elif choice == "list":
+            self.list_projects()
+        elif choice == "spawn":
+            self.spawn_hive()
+        elif choice == "status":
+            self.hive_status()
+        elif choice == "sessions":
+            self.hive_sessions()
+        elif choice == "advanced":
+            self.launch_manager_menu()
+        else:
+            self.app.exit()
 
     # ------------------------------------------------------------------
     # Menu handlers
