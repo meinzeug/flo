@@ -76,3 +76,8 @@
 \n### 2025-07-27 Final tweaks\n- Added "About" option to main menu with info dialog.\n- Updated handle_choice and new show_about method.\n
 \n### 2025-07-27 Help and spinner\n- Added F1 help dialog and F10 exit shortcut in FloTUI.\n- Implemented spinner in _run_task to show activity.\n- Header now mentions F1 help.
 \n### 2025-07-27 Spinner progress\n- Updated spinner in _run_task to display a pseudo percentage progress.
+
+### 2025-08-02 Milestone 09
+- Implemented improved monitor_and_self_heal with automatic Fix-Swarm and optimization calls.
+- MonitoringDashboard now aggregates session, status and swarm info.
+- Updated milestones and changelog.

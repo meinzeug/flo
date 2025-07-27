@@ -62,11 +62,11 @@
 - [x] `ProjectManagerTUI` erweitert CLI-Funktionen grafisch
 
 ## 09 – Self-Healing & Monitoring
-- [ ] `monitor_and_self_heal`:
+- [x] `monitor_and_self_heal`:
   - Memory-Scan auf „error“, Fix-Swarm bei Bedarf
-- [ ] `MonitoringDashboard`:
+- [x] `MonitoringDashboard`:
   - Konsolidiert `hive-mind sessions/status` & `swarm monitor`
-- [ ] Retry-Mechanismen & Performance-Tuning durch `fault_tolerance_retry` und `bottleneck_auto_optimize`
+- [x] Retry-Mechanismen & Performance-Tuning durch `fault_tolerance_retry` und `bottleneck_auto_optimize`
 
 ## 10 – Neural & Cognitive Tools
 - [ ] Werkzeuge:
