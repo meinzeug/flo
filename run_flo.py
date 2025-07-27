@@ -12,6 +12,7 @@ import sys
 import threading
 import itertools
 import time
+import os
 from contextlib import redirect_stdout
 from pathlib import Path
 from typing import List, Optional
@@ -37,6 +38,7 @@ class ProjectManagerTUI:
 
     def __init__(self, pm: ProjectManager) -> None:
         self.pm = pm
+        self.quick_commands: dict[str, list[str]] = {}
 
     def run(self) -> None:
         while True:
@@ -47,6 +49,8 @@ class ProjectManagerTUI:
                     ("create", "Create project"),
                     ("list", "List projects"),
                     ("monitor", "Monitor & heal"),
+                    ("config", "Configure tokens"),
+                    ("quick", "Quick commands"),
                     ("back", "Back"),
                 ],
             ).run()
@@ -64,6 +68,78 @@ class ProjectManagerTUI:
                 session = input_dialog(title="Monitor", text="Session ID:").run()
                 if session:
                     self.pm.monitor_and_self_heal(session)
+            elif choice == "config":
+                self.configure_tokens()
+            elif choice == "quick":
+                self.manage_quick_commands()
+            else:
+                break
+
+    def configure_tokens(self) -> None:
+        """Configure API tokens and model via dialog."""
+        git_token = input_dialog(title="GitHub token", text="GIT_TOKEN:").run()
+        open_token = input_dialog(title="OpenRouter token", text="OPENROUTER_TOKEN:").run()
+        model = input_dialog(
+            title="OpenRouter model",
+            text=f"OPENROUTER_MODEL ({os.environ.get('OPENROUTER_MODEL','qwen/qwen3-coder:free')}):",
+        ).run()
+        if git_token:
+            os.environ["GIT_TOKEN"] = git_token
+        if open_token:
+            os.environ["OPENROUTER_TOKEN"] = open_token
+        if model:
+            os.environ["OPENROUTER_MODEL"] = model
+        with open(".env", "w", encoding="utf-8") as f:
+            if os.environ.get("GIT_TOKEN"):
+                f.write(f"GIT_TOKEN={os.environ['GIT_TOKEN']}\n")
+            if os.environ.get("OPENROUTER_TOKEN"):
+                f.write(f"OPENROUTER_TOKEN={os.environ['OPENROUTER_TOKEN']}\n")
+            if os.environ.get("OPENROUTER_MODEL"):
+                f.write(f"OPENROUTER_MODEL={os.environ['OPENROUTER_MODEL']}\n")
+        message_dialog(title="Config", text="Tokens saved").run()
+
+    def manage_quick_commands(self) -> None:
+        """Simple management of quick commands."""
+        while True:
+            choice = radiolist_dialog(
+                title="Quick Commands",
+                text="Choose action",
+                values=[
+                    ("run", "Run command"),
+                    ("add", "Add command"),
+                    ("list", "List commands"),
+                    ("delete", "Delete command"),
+                    ("back", "Back"),
+                ],
+            ).run()
+            if choice == "run":
+                if not self.quick_commands:
+                    message_dialog(title="Quick", text="No commands").run()
+                    continue
+                items = [(name, name) for name in self.quick_commands.keys()]
+                sel = radiolist_dialog(title="Run Quick", text="Select", values=items).run()
+                if sel:
+                    args = self.quick_commands[sel]
+                    self.pm.cli._run(args)
+            elif choice == "add":
+                name = input_dialog(title="Add Quick", text="Name:").run()
+                cmd = input_dialog(title="Add Quick", text="Args:").run()
+                if name and cmd:
+                    self.quick_commands[name] = cmd.split()
+            elif choice == "list":
+                if not self.quick_commands:
+                    msg = "No commands"
+                else:
+                    msg = "\n".join(f"{k}: {' '.join(v)}" for k, v in self.quick_commands.items())
+                message_dialog(title="Commands", text=msg).run()
+            elif choice == "delete":
+                if not self.quick_commands:
+                    message_dialog(title="Quick", text="No commands").run()
+                    continue
+                items = [(name, name) for name in self.quick_commands.keys()]
+                sel = radiolist_dialog(title="Delete Quick", text="Select", values=items).run()
+                if sel and sel in self.quick_commands:
+                    del self.quick_commands[sel]
             else:
                 break
 

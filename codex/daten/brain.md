@@ -1,3 +1,6 @@
+### 2025-07-27 TUI additions
+- ProjectManagerTUI kann jetzt Tokens konfigurieren und Quick Commands verwalten.
+
 # Brain notes
 ## Plan
 - Split run_flo.py (2647 lines) into modules.
