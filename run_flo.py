@@ -14,7 +14,7 @@ from contextlib import redirect_stdout
 from pathlib import Path
 from typing import List, Optional
 
-from prompt_toolkit.application import Application
+from prompt_toolkit.application import Application, run_in_terminal
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout import Layout, HSplit
 from prompt_toolkit.shortcuts import input_dialog, message_dialog
@@ -23,6 +23,7 @@ from prompt_toolkit.widgets import MenuContainer, MenuItem, TextArea
 from setup_manager import SetupManager
 from claude_flow_cli import ClaudeFlowCLI
 from project_manager import ProjectManager
+from menu import ProjectManagerMenu
 from parser_builder import build_parser
 
 
@@ -34,14 +35,24 @@ class FloTUI:
         self.cli = ClaudeFlowCLI(Path.cwd())
         self.pm = ProjectManager(Path("projects").resolve(), self.cli)
 
+        self.header = TextArea(
+            text=" Flo TUI - use arrow keys to navigate ",
+            height=1,
+            style="reverse",
+            focusable=False,
+        )
         self.output = TextArea(style="class:output", scrollbar=True, focusable=True)
         self.status = TextArea(height=1, text="Ready", style="reverse")
-        body = HSplit([self.output, self.status])
+        body = HSplit([self.header, self.output, self.status])
 
         kb = KeyBindings()
 
         @kb.add("c-c")
         @kb.add("c-q")
+        def _(event) -> None:
+            event.app.exit()
+
+        @kb.add("escape")
         def _(event) -> None:
             event.app.exit()
 
@@ -59,6 +70,12 @@ class FloTUI:
                     MenuItem("Spawn", handler=self.spawn_hive),
                     MenuItem("Status", handler=self.hive_status),
                     MenuItem("Sessions", handler=self.hive_sessions),
+                ],
+            ),
+            MenuItem(
+                "Advanced",
+                children=[
+                    MenuItem("Project Manager", handler=self.launch_manager_menu),
                 ],
             ),
             MenuItem("Exit", handler=lambda: self.app.exit()),
@@ -118,6 +135,15 @@ class FloTUI:
     def hive_sessions(self) -> None:
         self._info("Listing sessions ...")
         self._run_task(self.cli.hive_sessions)
+
+    def launch_manager_menu(self) -> None:
+        """Open the extensive CLI menu from :mod:`menu` in the terminal."""
+
+        def _open() -> None:
+            menu = ProjectManagerMenu(self.pm)
+            menu.run()
+
+        run_in_terminal(_open)
 
     def run(self) -> None:
         self.app.run()
