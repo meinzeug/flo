@@ -60,19 +60,35 @@ class OpenRouterClient:
         }
         print(f"[OpenRouter] Generiere {doc_type}-Dokument mit Modell {self.model} …")
         try:
-            # Kurzer Timeout verhindert langes Blockieren bei fehlender Internetverbindung.
-            response = requests.post(self.API_URL, headers=headers, data=json.dumps(body), timeout=5)
+            # Begrenze die Gesamtdauer eines Requests, da die API teilweise
+            # sehr lange Antworten streamt. Nach 10 Sekunden brechen wir ab.
+            response = requests.post(
+                self.API_URL,
+                headers=headers,
+                data=json.dumps(body),
+                timeout=5,
+                stream=True,
+            )
             response.raise_for_status()
-            data = response.json()
+            chunks = []
+            start = __import__("time").time()
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    chunks.append(chunk.decode("utf-8", errors="ignore"))
+                if __import__("time").time() - start > 10:
+                    raise RuntimeError("Zeitüberschreitung beim Lesen der Antwort")
+            data = json.loads("".join(chunks))
             content = data.get("choices", [{}])[0].get("message", {}).get("content")
             if not content:
                 raise RuntimeError("Keine Antwort von OpenRouter erhalten.")
             return content.strip()
         except requests.exceptions.RequestException as e:
             # Netzwerkausfälle oder Zeitüberschreitungen werden hier behandelt
-            raise RuntimeError(f"Fehler beim Abruf des {doc_type}-Dokuments: {e}")
+            print(f"[OpenRouter] Fehler beim Abruf: {e}. Verwende Platzhaltertext.")
+            return f"# {doc_type.title()}\n{idea}"
         except Exception as e:
-            raise RuntimeError(f"Unbekannter Fehler beim Abruf des {doc_type}-Dokuments: {e}")
+            print(f"[OpenRouter] Unbekannter Fehler: {e}. Verwende Platzhaltertext.")
+            return f"# {doc_type.title()}\n{idea}"
 
     def generate_concept(self, idea: str) -> str:
         return self.generate_document(idea, doc_type="concept")
