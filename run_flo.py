@@ -10,6 +10,8 @@ from __future__ import annotations
 import io
 import sys
 import threading
+import itertools
+import time
 from contextlib import redirect_stdout
 from pathlib import Path
 from typing import List, Optional
@@ -77,7 +79,7 @@ class FloTUI:
         self.pm = ProjectManager(Path("projects").resolve(), self.cli)
 
         self.header = TextArea(
-            text=" Flo TUI - use arrow keys to navigate ",
+            text=" Flo TUI - use arrow keys, F1 for help ",
             height=1,
             style="reverse",
             focusable=False,
@@ -91,6 +93,16 @@ class FloTUI:
         @kb.add("c-q")
         def _(event) -> None:
             event.app.exit()
+
+        @kb.add("f10")
+        def _(event) -> None:
+            """Exit application with F10."""
+            event.app.exit()
+
+        @kb.add("f1")
+        def _(event) -> None:
+            """Show help dialog."""
+            self.show_help()
 
         @kb.add("escape")
         def _(event) -> None:
@@ -123,6 +135,17 @@ class FloTUI:
     # Utility helpers
     def _run_task(self, func, *args) -> None:
         """Execute a function in a background thread and display its output."""
+        stop = threading.Event()
+
+        def spinner() -> None:
+            for ch in itertools.cycle("|/-\\"):
+                if stop.is_set():
+                    break
+                self.status.text = f"Working {ch}"
+                self.app.invalidate()
+                time.sleep(0.1)
+            self.status.text = "Ready"
+            self.app.invalidate()
 
         def worker() -> None:
             buf = io.StringIO()
@@ -134,9 +157,10 @@ class FloTUI:
             text = buf.getvalue()
             def update() -> None:
                 self.output.buffer.insert_text(text)
-                self.status.text = "Ready"
             self.app.call_from_executor(update)
+            stop.set()
 
+        threading.Thread(target=spinner, daemon=True).start()
         threading.Thread(target=worker, daemon=True).start()
 
     def _info(self, text: str) -> None:
@@ -240,6 +264,17 @@ class FloTUI:
             ProjectManagerTUI(self.pm).run()
 
         run_in_terminal(_open)
+
+    def show_help(self) -> None:
+        """Display a help dialog with keyboard shortcuts."""
+        message = (
+            "Shortcuts:\n"
+            "  ↑/↓ - Navigate menu\n"
+            "  Enter - Select option\n"
+            "  Esc/F10 - Quit\n"
+            "  F1 - This help dialog"
+        )
+        message_dialog(title="Help", text=message).run()
 
     def show_about(self) -> None:
         """Display information about the TUI."""
