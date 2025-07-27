@@ -138,12 +138,15 @@ class FloTUI:
         stop = threading.Event()
 
         def spinner() -> None:
-            for ch in itertools.cycle("|/-\\"):
-                if stop.is_set():
-                    break
-                self.status.text = f"Working {ch}"
+            symbols = "|/-\\"
+            i = 0
+            pct = 0
+            while not stop.is_set():
+                self.status.text = f"Working {symbols[i % len(symbols)]} {pct}%"
                 self.app.invalidate()
                 time.sleep(0.1)
+                i += 1
+                pct = (pct + 2) % 100
             self.status.text = "Ready"
             self.app.invalidate()
 
