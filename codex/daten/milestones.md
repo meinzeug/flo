@@ -1,12 +1,12 @@
 # MILESTONES.md – Vollständiger Entwicklungsplan
 
 ## 01 – Setup & Grundinfrastruktur
-- [ ] `SetupManager.setup_environment` prüft:
+- [x] `SetupManager.setup_environment` prüft:
   - Node.js, npm, `claude`, `claude-flow@2.0.0-alpha.73`, `screen`
   - Existenz und Format von `.env` (inkl. `GIT_TOKEN`, `OPENROUTER_TOKEN`, `OPENROUTER_MODEL`)
-- [ ] Standardmodell `OPENROUTER_MODEL` wird gesetzt, falls nicht vorhanden
-- [ ] Systemabhängigkeiten werden dokumentiert und fehlende Pakete automatisch installiert
-- [ ] Logging zu Setup-Ergebnissen und Warnungen bei kritischen Abweichungen
+- [x] Standardmodell `OPENROUTER_MODEL` wird gesetzt, falls nicht vorhanden
+- [x] Systemabhängigkeiten werden dokumentiert und fehlende Pakete automatisch installiert
+- [x] Logging zu Setup-Ergebnissen und Warnungen bei kritischen Abweichungen
 
 ## 02 – Parser & CLI-Basis
 - [ ] `parser_builder.py` erstellt einen `argparse` Parser mit Subkommandos:

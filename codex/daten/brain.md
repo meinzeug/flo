@@ -1,3 +1,7 @@
+### 2025-07-28 Setup updates
+- Extended SetupManager to log to flow_autogen.log.
+- Added checks for claude-flow version, screen command, and missing .env.
+- Each step now uses _log helper for unified output.
 ### 2025-07-27 Auto dependency install
 - New ensure_package helper installs missing packages at runtime.
 

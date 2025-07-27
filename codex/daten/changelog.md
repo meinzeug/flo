@@ -1,3 +1,6 @@
+## 2025-07-28 – setup_manager.py
+Logging erweitert und Abhängigkeitsprüfung aktualisiert (screen, claude-flow Version). .env-Warnung und Default-Ausgabe.
+
 ## 2025-07-27 – run_flo.py
 Automatische Nachinstallation fehlender Pakete via ensure_package.
 
