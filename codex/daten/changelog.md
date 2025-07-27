@@ -1,3 +1,6 @@
+## 2025-07-27 – requirements.txt
+Prompt_toolkit als TUI-Abhängigkeit dokumentiert.
+
 ## 2025-07-27 – run_flo.py
 Quick-Command-Verwaltung und Token-Konfiguration in ProjectManagerTUI integriert.
 ## 2025-07-27 – run_flo.py
