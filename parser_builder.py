@@ -5,7 +5,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Python‑Wrapper für Claude‑Flow v2.0.0 Alpha. Voraussetzung: npx claude-flow@alpha ist installiert."
     )
-    sub = parser.add_subparsers(dest="command", required=True)
+    sub = parser.add_subparsers(dest="command")
 
     # init
     init_p = sub.add_parser("init", help="Initialisiert ein neues Claude‑Flow‑Projekt")

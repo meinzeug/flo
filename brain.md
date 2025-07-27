@@ -28,3 +28,8 @@
   checks; now only check if command exists.
 - OpenRouterClient timeout reduced to 5s and handles RequestException for
   better failure handling in restricted environments.
+
+### 2025-07-27 Argument parser fix
+- Removed required=True from parser subcommands.
+- Added check in run_flo.main to print help when no command provided.
+- Now running "python3 run_flo.py" shows help instead of error.
