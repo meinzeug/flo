@@ -14,7 +14,12 @@ from parser_builder import build_parser
 def main(argv: Optional[List[str]] = None) -> None:
     SetupManager.setup_environment()
     parser = build_parser()
+
     args = parser.parse_args(argv)
+    if not args.command:
+        parser.print_help()
+        return
+
     cli = ClaudeFlowCLI(Path.cwd())
 
     cmd = args.command
