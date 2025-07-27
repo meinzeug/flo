@@ -836,27 +836,22 @@ class MonitoringDashboard:
 
     def show(self) -> None:
         """
-        Zeigt eine strukturierte Übersicht über alle Hive‑Sessions, den aktuellen
-        Hive‑Status, Swarm‑Überwachung sowie Topologie‑Optimierung und Lastverteilung.
-        Anstelle der reinen CLI‑Ausgabe werden die Ergebnisse erfasst und als
-        Klartext oder einfache Tabellen ausgegeben. Diese Darstellung ist
-        theoretisch, da das Parsing der realen Ausgabe vom Format abhängt.
+        Ruft ``hive-mind sessions``, ``hive-mind status`` und ``swarm monitor``
+        ab und fasst die Ausgaben übersichtlich zusammen. Die Ausgabe dient nur
+        als Beispiel, da in dieser Umgebung keine echte Session läuft und das
+        Format der CLI‑Befehle nicht bekannt ist.
         """
-        print("\n[Monitoring] Aktive Hive‑Mind‑Sessions:")
-        sessions_out = self.cli._run_capture(["hive-mind", "sessions"])
-        print(sessions_out or "(Keine Sessions oder Ausgabe nicht verfügbar)")
-        print("\n[Monitoring] Status des aktuellen Hive:")
-        status_out = self.cli._run_capture(["hive-mind", "status"])
-        print(status_out or "(Kein Status verfügbar)")
-        print("\n[Monitoring] Swarm‑Überwachung (Dashboard & Echtzeit):")
-        swarm_out = self.cli._run_capture(["swarm", "monitor", "--dashboard", "--real-time"])
-        print(swarm_out or "(Keine Swarm‑Daten verfügbar)")
-        print("\n[Monitoring] Topologie & Lastverteilung:")
-        topo = self.cli._run_capture(["swarm", "topology-optimize"])
-        lb = self.cli._run_capture(["swarm", "load-balance"])
-        print(topo)
-        print(lb)
-        print("\n[Monitoring] Queen‑Aktivitäten werden über den Hive‑Status angezeigt.")
+        sessions = self.cli._run_capture(["hive-mind", "sessions"])
+        status = self.cli._run_capture(["hive-mind", "status"])
+        swarm = self.cli._run_capture(["swarm", "monitor"])
+
+        print("\n=== Monitoring Dashboard ===")
+        print("-- Sessions --")
+        print(sessions or "(keine)")
+        print("\n-- Status --")
+        print(status or "(keine)")
+        print("\n-- Swarm --")
+        print(swarm or "(keine Daten)")
 
 
 class QueenChat:
