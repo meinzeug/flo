@@ -17,13 +17,54 @@ from typing import List, Optional
 from prompt_toolkit.application import Application, run_in_terminal
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout import Layout, HSplit
-from prompt_toolkit.shortcuts import input_dialog, message_dialog
+from prompt_toolkit.shortcuts import (
+    input_dialog,
+    message_dialog,
+    radiolist_dialog,
+)
 from prompt_toolkit.widgets import MenuContainer, MenuItem, TextArea
 
 from setup_manager import SetupManager
 from claude_flow_cli import ClaudeFlowCLI
 from project_manager import ProjectManager
 from menu import ProjectManagerMenu
+
+
+class ProjectManagerTUI:
+    """Minimal prompt_toolkit based menu for :class:`ProjectManager`."""
+
+    def __init__(self, pm: ProjectManager) -> None:
+        self.pm = pm
+
+    def run(self) -> None:
+        while True:
+            choice = radiolist_dialog(
+                title="Project Manager",
+                text="Choose an action",
+                values=[
+                    ("create", "Create project"),
+                    ("list", "List projects"),
+                    ("monitor", "Monitor & heal"),
+                    ("back", "Back"),
+                ],
+            ).run()
+            if choice == "create":
+                idea = input_dialog(title="New Project", text="Describe your idea:").run()
+                if not idea:
+                    continue
+                template = input_dialog(title="Template", text="Template (optional):").run()
+                self.pm.create_project(idea, template or None)
+            elif choice == "list":
+                projects = sorted(p.name for p in self.pm.base_dir.glob("*") if p.is_dir())
+                msg = "No projects found" if not projects else "\n".join(projects)
+                message_dialog(title="Projects", text=msg).run()
+            elif choice == "monitor":
+                session = input_dialog(title="Monitor", text="Session ID:").run()
+                if session:
+                    self.pm.monitor_and_self_heal(session)
+            else:
+                break
+
 from parser_builder import build_parser
 
 
@@ -137,11 +178,10 @@ class FloTUI:
         self._run_task(self.cli.hive_sessions)
 
     def launch_manager_menu(self) -> None:
-        """Open the extensive CLI menu from :mod:`menu` in the terminal."""
+        """Open the project manager menu inside the TUI."""
 
         def _open() -> None:
-            menu = ProjectManagerMenu(self.pm)
-            menu.run()
+            ProjectManagerTUI(self.pm).run()
 
         run_in_terminal(_open)
 

@@ -41,3 +41,4 @@
 - Added header and ESC key for quitting.
 - Integrated ProjectManagerMenu via "Advanced" menu using run_in_terminal.
 - Added basic status bar.
+\n### 2025-07-27 More TUI updates\n- Implemented ProjectManagerTUI using prompt_toolkit dialogs.\n- launch_manager_menu now opens this dialog instead of the old CLI menu.\n
