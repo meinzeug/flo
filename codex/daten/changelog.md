@@ -26,3 +26,7 @@ Spinner zeigt nun fortlaufende Prozentanzeige.
 ## 2025-07-27 – run_flo.py
 F1-Hilfe und Spinner für Hintergrundaufgaben implementiert. Header aktualisiert.
 \n## 2025-08-03 – Prompt verification\n- Verified Milestone 09 features via small test script.\n
+
+## 2025-08-04 – Prompt re-run
+- Re-executed monitor_and_self_heal and MonitoringDashboard to validate milestone 09.
+
