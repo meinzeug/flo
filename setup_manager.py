@@ -53,10 +53,21 @@ class SetupManager:
             cls.install_claude_code()
 
         try:
-            subprocess.run(["npx", "claude-flow@alpha", "--version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            env = os.environ.copy()
+            env.setdefault("npm_config_yes", "true")
+            subprocess.run(
+                ["npx", "claude-flow@alpha", "--version"],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=env,
+                timeout=15,
+            )
             print("[Setup] claude-flow@alpha ist bereits installiert.")
-        except Exception:
-            cls.install_claude_flow()
+        except Exception as e:
+            print(
+                f"[Setup] Warnung: 'claude-flow@alpha' konnte nicht verifiziert werden: {e}."
+            )
 
         if not cls._command_exists("claude"):
             print(
@@ -64,7 +75,14 @@ class SetupManager:
                 " Bitte stellen Sie sicher, dass @anthropic-ai/claude-code korrekt installiert ist."
             )
         try:
-            subprocess.run(["npx", "claude-flow@alpha", "--version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(
+                ["npx", "claude-flow@alpha", "--version"],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=env,
+                timeout=15,
+            )
         except Exception:
             print(
                 "[Setup] Warnung: 'claude-flow@alpha' konnte trotz Installation nicht gefunden werden."

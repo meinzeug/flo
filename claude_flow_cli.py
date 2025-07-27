@@ -21,11 +21,11 @@ class ClaudeFlowCLI:
         """
         cmd = ["npx", "claude-flow@alpha"] + args
         print(f"Ausführen: {' '.join(cmd)}")
-        # Übergibt die aktuellen Umgebungsvariablen an den Subprozess
         env = os.environ.copy()
+        env.setdefault("npm_config_yes", "true")
         try:
             # Führe den Befehl aus und speichere die Argumentliste in der Historie
-            subprocess.run(cmd, cwd=self.working_dir, env=env)
+            subprocess.run(cmd, cwd=self.working_dir, env=env, timeout=15)
             try:
                 # Speichere nur das Argumentsegment (ohne npx) für die Anzeige
                 self.command_history.append(' '.join(args))
@@ -44,8 +44,16 @@ class ClaudeFlowCLI:
         """
         cmd = ["npx", "claude-flow@alpha"] + args
         env = os.environ.copy()
+        env.setdefault("npm_config_yes", "true")
         try:
-            result = subprocess.run(cmd, cwd=self.working_dir, env=env, capture_output=True, text=True)
+            result = subprocess.run(
+                cmd,
+                cwd=self.working_dir,
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=15,
+            )
             # Füge das Kommando zur Historie hinzu
             try:
                 self.command_history.append(' '.join(args))
