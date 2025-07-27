@@ -1,3 +1,6 @@
+### 2025-07-27 Dependency fix
+- Added requirements.txt to document prompt_toolkit dependency after start failure.
+
 ### 2025-07-27 TUI additions
 - ProjectManagerTUI kann jetzt Tokens konfigurieren und Quick Commands verwalten.
 
