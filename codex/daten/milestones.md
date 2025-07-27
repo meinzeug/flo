@@ -9,49 +9,49 @@
 - [x] Logging zu Setup-Ergebnissen und Warnungen bei kritischen Abweichungen
 
 ## 02 – Parser & CLI-Basis
-- [ ] `parser_builder.py` erstellt einen `argparse` Parser mit Subkommandos:
+- [x] `parser_builder.py` erstellt einen `argparse` Parser mit Subkommandos:
   - Init, Hive, Swarm, Memory, Neural, Workflow, GitHub, DAA, Security, System
-- [ ] Unterstützung für:
+- [x] Unterstützung für:
   - SPARC-Modi, Batch/Concurrent Workflows, Hintergrundausführung
-- [ ] Legacy-CLI-Fallback in `run_flo.py`, falls Argumente erkannt werden
+- [x] Legacy-CLI-Fallback in `run_flo.py`, falls Argumente erkannt werden
 
 ## 03 – ClaudeFlowCLI Wrapper
-- [ ] Kapselt `npx claude-flow@2.0.0-alpha.73` über:
+- [x] Kapselt `npx claude-flow@2.0.0-alpha.73` über:
   - `_run`, `_run_capture` (mit Historienlog)
-- [ ] Implementiert Wrappermethoden:
+- [x] Implementiert Wrappermethoden:
   - Hive (spawn, resume, status, sessions)
   - Swarm (create, monitor, run, fix)
   - Memory, Neural, Cognitive, Workflow, GitHub
-- [ ] Ausgabehandling, Fehlererkennung, Timeouts mit intelligenter Wiederholung
+- [x] Ausgabehandling, Fehlererkennung, Timeouts mit intelligenter Wiederholung
 
 ## 04 – OpenRouter API
-- [ ] `OpenRouterClient` sendet strukturierte Prompts an `https://openrouter.ai/api/v1/chat/completions`
-- [ ] Prompt-Arten:
+- [x] `OpenRouterClient` sendet strukturierte Prompts an `https://openrouter.ai/api/v1/chat/completions`
+- [x] Prompt-Arten:
   - Konzept, Requirements, Design, Testplan
-- [ ] Fallback bei Timeouts, Fehlercode-Handling, Logging
-- [ ] Markdown-Antworten speichern und ggf. in Projektstruktur einbinden
+- [x] Fallback bei Timeouts, Fehlercode-Handling, Logging
+- [x] Markdown-Antworten speichern und ggf. in Projektstruktur einbinden
 
 ## 05 – Projektmanager & Template-Struktur
-- [ ] `ProjectManager.create_project(slug)`:
+- [x] `ProjectManager.create_project(slug)`:
   - Slug-Generierung, Ordnerstruktur (`src/`, `tests/`, `.data/`)
   - Projektidee, Dokumente via OpenRouter generieren
   - Templates wie Agile, DDD, CLI, Microservice, WebApp, Pipeline erkennen
   - `cli.init` bei fehlendem `.hive-mind`
-- [ ] SDLC/Workflow starten: `sparc_full_workflow`, `run_sdlc_workflow`
-- [ ] Selbstheilung durch `auto_correct`, `monitor_and_self_heal`
+- [x] SDLC/Workflow starten: `sparc_full_workflow`, `run_sdlc_workflow`
+- [x] Selbstheilung durch `auto_correct`, `monitor_and_self_heal`
 
 ## 06 – SDLC Workflow Engine
-- [ ] `run_sdlc_workflow` durchläuft:
+- [x] `run_sdlc_workflow` durchläuft:
   - Requirement-Analyse, Design, Implementation, Tests, Deployment
-- [ ] Nach jeder Phase wird automatisch ein Fehler-Scan via `auto_correct()` ausgelöst
-- [ ] CI/CD, GitHub Releases und automatisiertes Deployment inkludiert
+- [x] Nach jeder Phase wird automatisch ein Fehler-Scan via `auto_correct()` ausgelöst
+- [x] CI/CD, GitHub Releases und automatisiertes Deployment inkludiert
 
 ## 07 – CLI-Menüsystem: ProjectManagerMenu
-- [ ] Zwei Modi: Einfach / Experte
-- [ ] Kernfunktionen: Projektverwaltung, Session-Monitoring, Token-Konfiguration
-- [ ] Erweiterte Tools:
+- [x] Zwei Modi: Einfach / Experte
+- [x] Kernfunktionen: Projektverwaltung, Session-Monitoring, Token-Konfiguration
+- [x] Erweiterte Tools:
   - SPARC, Swarm Orchestration, Security Audit, Agent Lifecycle, Recovery Tools
-- [ ] Erweiterbare Menüstruktur mit dynamischer Feature-Erkennung
+- [x] Erweiterbare Menüstruktur mit dynamischer Feature-Erkennung
 
 ## 08 – FloTUI (Text User Interface)
 - [x] Start über `run_flo.py` ohne Parameter

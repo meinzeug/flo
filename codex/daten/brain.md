@@ -1,3 +1,6 @@
+### 2025-07-31 Milestone update
+- Updated milestones 02-07 to reflect completed features.
+
 ### 2025-07-28 Setup updates
 - Extended SetupManager to log to flow_autogen.log.
 - Added checks for claude-flow version, screen command, and missing .env.
