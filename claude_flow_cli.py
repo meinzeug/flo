@@ -1,5 +1,6 @@
 import os
 import subprocess
+import shutil
 from pathlib import Path
 from typing import List, Optional
 
@@ -19,7 +20,10 @@ class ClaudeFlowCLI:
         Alle aktuellen Umgebungsvariablen (einschließlich geladener API‑Tokens) werden
         an den Subprozess vererbt.
         """
-        cmd = ["npx", "claude-flow@alpha"] + args
+        # Verwende das installierte ``claude-flow`` falls verfügbar, um
+        # Probleme mit npx und temporären Verzeichnissen zu vermeiden.
+        base_cmd = ["claude-flow"] if shutil.which("claude-flow") else ["npx", "claude-flow@alpha"]
+        cmd = base_cmd + args
         print(f"Ausführen: {' '.join(cmd)}")
         env = os.environ.copy()
         env.setdefault("npm_config_yes", "true")
@@ -42,7 +46,8 @@ class ClaudeFlowCLI:
         Informationen über Sessions, Status oder Swarm zu parsen. Bei einem
         Fehler wird der Fehlertext zurückgegeben.
         """
-        cmd = ["npx", "claude-flow@alpha"] + args
+        base_cmd = ["claude-flow"] if shutil.which("claude-flow") else ["npx", "claude-flow@alpha"]
+        cmd = base_cmd + args
         env = os.environ.copy()
         env.setdefault("npm_config_yes", "true")
         try:
