@@ -1,3 +1,6 @@
+## 2025-08-01 – Codex Reinitialisierung
+- Prompt-Datei codex/daten/prompt.md erstellt.
+- Markdown-Dokumente von Shell-Prompt-Zeilen bereinigt.
 ## 2025-07-30 – run_flo.py
 Hauptmenü um Monitoring und Token Setup erweitert. Neue Methoden `configure_tokens`
 und `show_monitoring` implementiert. Menü zeigt jetzt sieben Optionen.
