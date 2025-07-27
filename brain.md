@@ -35,3 +35,4 @@
 - Now running "python3 run_flo.py" shows help instead of error.
 \n### Fix openrouter timeout\n- Modified openrouter_client.generate_document to stream response with 10s timeout and return placeholder text on failure.
 \n### 2025-07-27 Run test\n- Executed run_flo.py and tested ProjectManager menu.\n- Network requests to openrouter timed out; placeholder text used.\n- No Python errors during startup or menu operations.\n
+\n### 2025-07-27 TUI redesign\n- Replaced CLI entry in run_flo.py with a prompt_toolkit TUI (FloTUI).\n- Legacy CLI preserved when arguments are supplied.\n- Added basic menus for Project and Hive actions using arrow navigation.\n- Commands run in background threads and output captured to a scrollable text area.
