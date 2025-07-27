@@ -33,3 +33,4 @@
 - Removed required=True from parser subcommands.
 - Added check in run_flo.main to print help when no command provided.
 - Now running "python3 run_flo.py" shows help instead of error.
+\n### Fix openrouter timeout\n- Modified openrouter_client.generate_document to stream response with 10s timeout and return placeholder text on failure.
