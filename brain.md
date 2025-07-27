@@ -48,3 +48,4 @@
 - Added projects_menu and hive_menu subdialogs using radiolist_dialog.
 - Each action triggers create/list/monitor or spawn/status/sessions.
 - Updated brain.md with new section.
+\n### 2025-07-27 Final tweaks\n- Added "About" option to main menu with info dialog.\n- Updated handle_choice and new show_about method.\n
