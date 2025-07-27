@@ -23,3 +23,8 @@
 - Added .gitignore for untracked files.
 \n### 2025-07-27 Debugging\n- Modified SetupManager.setup_environment to set npm_config_yes and timeout to avoid interactive npx hang.\n- Updated .gitignore to exclude __pycache__.\n
 - Added timeout and npm_config_yes handling in CLI _run to prevent hang when npx prompts.
+\n### 2025-07-27 Further fixes
+- SetupManager.skip verifying claude-flow with npx to avoid lengthy install
+  checks; now only check if command exists.
+- OpenRouterClient timeout reduced to 5s and handles RequestException for
+  better failure handling in restricted environments.

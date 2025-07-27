@@ -52,21 +52,16 @@ class SetupManager:
         else:
             cls.install_claude_code()
 
-        try:
-            env = os.environ.copy()
-            env.setdefault("npm_config_yes", "true")
-            subprocess.run(
-                ["npx", "claude-flow@alpha", "--version"],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                env=env,
-                timeout=15,
-            )
-            print("[Setup] claude-flow@alpha ist bereits installiert.")
-        except Exception as e:
+        # Vermeide potenziell lange Netzwerkaufrufe durch npx. Stattdessen
+        # wird lediglich geprüft, ob das Kommando ``claude-flow`` bereits im
+        # PATH vorhanden ist. Damit startet die Anwendung auch in Umgebungen
+        # ohne npm oder ohne Internetzugang schnell.
+        if cls._command_exists("claude-flow"):
+            print("[Setup] claude-flow ist vorhanden.")
+        else:
             print(
-                f"[Setup] Warnung: 'claude-flow@alpha' konnte nicht verifiziert werden: {e}."
+                "[Setup] Warnung: 'claude-flow' scheint nicht installiert zu sein."
+                " Einige Funktionen stehen möglicherweise nicht zur Verfügung."
             )
 
         if not cls._command_exists("claude"):
@@ -74,20 +69,7 @@ class SetupManager:
                 "[Setup] Warnung: Das Kommando 'claude' ist nach der Installation nicht auffindbar."
                 " Bitte stellen Sie sicher, dass @anthropic-ai/claude-code korrekt installiert ist."
             )
-        try:
-            subprocess.run(
-                ["npx", "claude-flow@alpha", "--version"],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                env=env,
-                timeout=15,
-            )
-        except Exception:
-            print(
-                "[Setup] Warnung: 'claude-flow@alpha' konnte trotz Installation nicht gefunden werden."
-                " Prüfen Sie die Installation und Ihre PATH-Variable."
-            )
+        # Keine weitere Verifikation per ``npx`` um Wartezeiten zu vermeiden.
         cls.load_env_tokens()
 
     @classmethod

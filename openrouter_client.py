@@ -1,4 +1,5 @@
 from typing import Dict
+import requests
 
 
 class OpenRouterClient:
@@ -11,7 +12,6 @@ class OpenRouterClient:
         self.model = model
 
     def generate_document(self, idea: str, doc_type: str = "concept") -> str:
-        import requests
         import json
 
         prompts = {
@@ -60,15 +60,19 @@ class OpenRouterClient:
         }
         print(f"[OpenRouter] Generiere {doc_type}-Dokument mit Modell {self.model} …")
         try:
-            response = requests.post(self.API_URL, headers=headers, data=json.dumps(body), timeout=60)
+            # Kurzer Timeout verhindert langes Blockieren bei fehlender Internetverbindung.
+            response = requests.post(self.API_URL, headers=headers, data=json.dumps(body), timeout=5)
             response.raise_for_status()
             data = response.json()
             content = data.get("choices", [{}])[0].get("message", {}).get("content")
             if not content:
                 raise RuntimeError("Keine Antwort von OpenRouter erhalten.")
             return content.strip()
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
+            # Netzwerkausfälle oder Zeitüberschreitungen werden hier behandelt
             raise RuntimeError(f"Fehler beim Abruf des {doc_type}-Dokuments: {e}")
+        except Exception as e:
+            raise RuntimeError(f"Unbekannter Fehler beim Abruf des {doc_type}-Dokuments: {e}")
 
     def generate_concept(self, idea: str) -> str:
         return self.generate_document(idea, doc_type="concept")
