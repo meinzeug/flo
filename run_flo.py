@@ -1,20 +1,134 @@
 #!/usr/bin/env python3
-"""run_flo.py – Abstrakte Orchestrierung von Claude‑Flow v2.0.0 Alpha."""
+"""Flow TUI launcher.
 
+This script starts a text user interface (TUI) for the Flow automation tools.
+It keeps the legacy CLI as a fallback when arguments are provided.
+"""
+
+from __future__ import annotations
+
+import io
+import sys
+import threading
+from contextlib import redirect_stdout
 from pathlib import Path
 from typing import List, Optional
+
+from prompt_toolkit.application import Application
+from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.layout import Layout, HSplit
+from prompt_toolkit.shortcuts import input_dialog, message_dialog
+from prompt_toolkit.widgets import MenuContainer, MenuItem, TextArea
 
 from setup_manager import SetupManager
 from claude_flow_cli import ClaudeFlowCLI
 from project_manager import ProjectManager
-from menu import ProjectManagerMenu
 from parser_builder import build_parser
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+class FloTUI:
+    """Simple TUI wrapper around :class:`ProjectManager` and :class:`ClaudeFlowCLI`."""
+
+    def __init__(self) -> None:
+        SetupManager.setup_environment()
+        self.cli = ClaudeFlowCLI(Path.cwd())
+        self.pm = ProjectManager(Path("projects").resolve(), self.cli)
+
+        self.output = TextArea(style="class:output", scrollbar=True, focusable=True)
+        self.status = TextArea(height=1, text="Ready", style="reverse")
+        body = HSplit([self.output, self.status])
+
+        kb = KeyBindings()
+
+        @kb.add("c-c")
+        @kb.add("c-q")
+        def _(event) -> None:
+            event.app.exit()
+
+        menu_items = [
+            MenuItem(
+                "Project",
+                children=[
+                    MenuItem("Create", handler=self.create_project),
+                    MenuItem("List", handler=self.list_projects),
+                ],
+            ),
+            MenuItem(
+                "Hive",
+                children=[
+                    MenuItem("Spawn", handler=self.spawn_hive),
+                    MenuItem("Status", handler=self.hive_status),
+                    MenuItem("Sessions", handler=self.hive_sessions),
+                ],
+            ),
+            MenuItem("Exit", handler=lambda: self.app.exit()),
+        ]
+
+        self.container = MenuContainer(body=body, menu_items=menu_items, key_bindings=kb)
+        self.app = Application(layout=Layout(self.container), full_screen=True, key_bindings=kb)
+
+    # ------------------------------------------------------------------
+    # Utility helpers
+    def _run_task(self, func, *args) -> None:
+        """Execute a function in a background thread and display its output."""
+
+        def worker() -> None:
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                try:
+                    func(*args)
+                except Exception as exc:  # pragma: no cover - runtime feedback only
+                    print(f"[Error] {exc}")
+            text = buf.getvalue()
+            self.app.call_from_executor(lambda: self.output.buffer.insert_text(text))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _info(self, text: str) -> None:
+        self.status.text = text
+        self.app.invalidate()
+
+    # ------------------------------------------------------------------
+    # Menu handlers
+    def create_project(self) -> None:
+        idea = input_dialog(title="New Project", text="Describe your idea:").run()
+        if not idea:
+            return
+        template = input_dialog(title="Template", text="Template (optional):").run()
+        self._info("Creating project ...")
+        self._run_task(self.pm.create_project, idea, template or None)
+
+    def list_projects(self) -> None:
+        projects = sorted(p.name for p in self.pm.base_dir.glob("*") if p.is_dir())
+        if not projects:
+            message_dialog(title="Projects", text="No projects found").run()
+        else:
+            message_dialog(title="Projects", text="\n".join(projects)).run()
+
+    def spawn_hive(self) -> None:
+        desc = input_dialog(title="Hive Spawn", text="Description:").run()
+        if desc:
+            self._info("Spawning hive ...")
+            self._run_task(self.cli.hive_spawn, desc)
+
+    def hive_status(self) -> None:
+        self._info("Retrieving status ...")
+        self._run_task(self.cli.hive_status)
+
+    def hive_sessions(self) -> None:
+        self._info("Listing sessions ...")
+        self._run_task(self.cli.hive_sessions)
+
+    def run(self) -> None:
+        self.app.run()
+
+
+# ----------------------------------------------------------------------
+# Legacy CLI fallback
+
+def run_cli(argv: Optional[List[str]] = None) -> None:
     SetupManager.setup_environment()
     parser = build_parser()
-
     args = parser.parse_args(argv)
     if not args.command:
         parser.print_help()
@@ -60,7 +174,13 @@ def main(argv: Optional[List[str]] = None) -> None:
     elif cmd == "github":
         cli.github_mode(args.mode, args.args)
     elif cmd == "daa-create":
-        cli.daa_agent_create(args.agent_type, args.capabilities, args.resources, args.security_level, args.sandbox)
+        cli.daa_agent_create(
+            args.agent_type,
+            args.capabilities,
+            args.resources,
+            args.security_level,
+            args.sandbox,
+        )
     elif cmd == "daa-match":
         cli.daa_capability_match(args.task_requirements)
     elif cmd == "daa-lifecycle":
@@ -212,6 +332,17 @@ def main(argv: Optional[List[str]] = None) -> None:
         menu.run()
     else:
         parser.print_help()
+
+
+# ----------------------------------------------------------------------
+
+def main(argv: Optional[List[str]] | None = None) -> None:
+    if argv:
+        run_cli(argv)
+    elif len(sys.argv) > 1:
+        run_cli(sys.argv[1:])
+    else:
+        FloTUI().run()
 
 
 if __name__ == "__main__":
