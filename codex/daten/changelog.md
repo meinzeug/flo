@@ -25,3 +25,4 @@ Quick-Command-Verwaltung und Token-Konfiguration in ProjectManagerTUI integriert
 Spinner zeigt nun fortlaufende Prozentanzeige.
 ## 2025-07-27 – run_flo.py
 F1-Hilfe und Spinner für Hintergrundaufgaben implementiert. Header aktualisiert.
+\n## 2025-08-03 – Prompt verification\n- Verified Milestone 09 features via small test script.\n
