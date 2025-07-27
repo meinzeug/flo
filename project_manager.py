@@ -242,17 +242,28 @@ class ProjectManager:
         return f"Beschreibe diese Idee in 5 Stichpunkten: {short}"
 
     def monitor_and_self_heal(self, session_id: str) -> None:
+        """Überwacht eine Hive‑Mind‑Session und führt bei Bedarf
+        Selbstheilungsmaßnahmen aus.
+
+        Die Methode durchsucht den Memory nach dem Begriff ``error`` und
+        startet einen Fix‑Swarm, wenn Treffer gefunden werden. Anschließend
+        werden ``fault_tolerance_retry`` und ``bottleneck_auto_optimize``
+        aufgerufen, um die Performance zu verbessern. Da in dieser Umgebung
+        keine echte Claude‑Flow‑Session läuft, dient die Implementierung nur
+        als Demonstration.
         """
-        Überwacht den Verlauf einer Hive‑Mind‑Sitzung und startet bei Fehlern
-        automatische Korrekturaufgaben. Diese Implementierung ist theoretisch,
-        da in dieser Umgebung kein Zugriff auf laufende Sitzungen besteht.
-        """
-        print(f"[ProjectManager] Überwache Session {session_id} auf Fehler … (theoretisch)")
-        # Beispiel: Fehler erkennen, indem wir im Speicher nach dem Begriff 'error' suchen
-        self.cli.memory_query("error", limit=3)
-        # Annahme: Wenn Fehler gefunden werden, starte korrigierende Swarm‑Aufgabe
-        # self.cli.swarm("Fix detected errors", continue_session=True)
-        print("[ProjectManager] Selbstheilung abgeschlossen (theoretisch).")
+        print(f"[ProjectManager] Überwache Session {session_id} auf Fehler …")
+        result = self.cli._run_capture(["memory", "query", "error", "--limit", "3"])
+        if result and "error" in result.lower():
+            print("[Monitor] Fehler gefunden – starte Fix-Swarm …")
+            self.cli.swarm("Fix detected errors", continue_session=True)
+        else:
+            print("[Monitor] Keine Fehler im Memory gefunden.")
+
+        # Optimierungs- und Retry-Mechanismen ausführen
+        self.cli.fault_tolerance_retry()
+        self.cli.bottleneck_auto_optimize()
+        print("[ProjectManager] Selbstheilung abgeschlossen.")
 
     def run_sdlc_workflow(self, feature_desc: str) -> None:
         """
