@@ -98,12 +98,9 @@ class FloTUI:
 
         self.menu = RadioList(
             [
-                ("create", "Create project"),
-                ("list", "List projects"),
-                ("spawn", "Hive spawn"),
-                ("status", "Hive status"),
-                ("sessions", "Hive sessions"),
-                ("advanced", "Advanced menu"),
+                ("projects", "Projects"),
+                ("hive", "Hive"),
+                ("advanced", "Advanced"),
                 ("exit", "Exit"),
             ]
         )
@@ -146,16 +143,10 @@ class FloTUI:
         self.app.invalidate()
 
     def handle_choice(self, choice: str | None) -> None:
-        if choice == "create":
-            self.create_project()
-        elif choice == "list":
-            self.list_projects()
-        elif choice == "spawn":
-            self.spawn_hive()
-        elif choice == "status":
-            self.hive_status()
-        elif choice == "sessions":
-            self.hive_sessions()
+        if choice == "projects":
+            self.projects_menu()
+        elif choice == "hive":
+            self.hive_menu()
         elif choice == "advanced":
             self.launch_manager_menu()
         else:
@@ -191,6 +182,53 @@ class FloTUI:
     def hive_sessions(self) -> None:
         self._info("Listing sessions ...")
         self._run_task(self.cli.hive_sessions)
+
+    # ------------------------------------------------------------------
+    # Sub menus
+    def projects_menu(self) -> None:
+        while True:
+            choice = radiolist_dialog(
+                title="Projects",
+                text="Choose an action",
+                values=[
+                    ("create", "Create project"),
+                    ("list", "List projects"),
+                    ("monitor", "Monitor & heal"),
+                    ("back", "Back"),
+                ],
+            ).run()
+            if choice == "create":
+                self.create_project()
+            elif choice == "list":
+                self.list_projects()
+            elif choice == "monitor":
+                session = input_dialog(title="Monitor", text="Session ID:").run()
+                if session:
+                    self._info("Monitoring ...")
+                    self._run_task(self.pm.monitor_and_self_heal, session)
+            else:
+                break
+
+    def hive_menu(self) -> None:
+        while True:
+            choice = radiolist_dialog(
+                title="Hive",
+                text="Choose an action",
+                values=[
+                    ("spawn", "Spawn hive"),
+                    ("status", "Hive status"),
+                    ("sessions", "Hive sessions"),
+                    ("back", "Back"),
+                ],
+            ).run()
+            if choice == "spawn":
+                self.spawn_hive()
+            elif choice == "status":
+                self.hive_status()
+            elif choice == "sessions":
+                self.hive_sessions()
+            else:
+                break
 
     def launch_manager_menu(self) -> None:
         """Open the project manager menu inside the TUI."""

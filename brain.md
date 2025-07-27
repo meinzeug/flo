@@ -43,3 +43,8 @@
 - Added basic status bar.
 \n### 2025-07-27 More TUI updates\n- Implemented ProjectManagerTUI using prompt_toolkit dialogs.\n- launch_manager_menu now opens this dialog instead of the old CLI menu.\n
 \n### 2025-07-27 TUI layout update\n- Replaced menubar with vertical RadioList menu.\n- Added Frame and Box layout with header, menu pane, output pane, and status bar.\n- ESC or Ctrl+C quits, Enter selects menu item.\n- run_flo.py compiles and CLI fallback unaffected.\n
+### 2025-07-27 Structured TUI menus
+- Replaced main menu options with categories Projects, Hive, Advanced, Exit.
+- Added projects_menu and hive_menu subdialogs using radiolist_dialog.
+- Each action triggers create/list/monitor or spawn/status/sessions.
+- Updated brain.md with new section.
