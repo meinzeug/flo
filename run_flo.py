@@ -254,6 +254,8 @@ class FloTUI:
             text = buf.getvalue()
             def update() -> None:
                 self.output.buffer.insert_text(text)
+                # Scroll to bottom so the newest output is visible
+                self.output.buffer.cursor_position = len(self.output.buffer.text)
             self.app.call_from_executor(update)
             stop.set()
 
