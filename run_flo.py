@@ -48,7 +48,7 @@ from prompt_toolkit.widgets import TextArea, RadioList, Frame, Box
 from setup_manager import SetupManager
 from claude_flow_cli import ClaudeFlowCLI
 from project_manager import ProjectManager
-from menu import ProjectManagerMenu
+from menu import ProjectManagerMenu, MonitoringDashboard
 
 
 class ProjectManagerTUI:
@@ -206,6 +206,8 @@ class FloTUI:
             [
                 ("projects", "Projects"),
                 ("hive", "Hive"),
+                ("monitor", "Monitoring"),
+                ("tokens", "Token Setup"),
                 ("advanced", "Advanced"),
                 ("about", "About"),
                 ("exit", "Exit"),
@@ -266,11 +268,45 @@ class FloTUI:
         self.status.text = text
         self.app.invalidate()
 
+    def configure_tokens(self) -> None:
+        """Configure API tokens and model via dialog."""
+        git_token = input_dialog(title="GitHub token", text="GIT_TOKEN:").run()
+        open_token = input_dialog(title="OpenRouter token", text="OPENROUTER_TOKEN:").run()
+        model = input_dialog(
+            title="OpenRouter model",
+            text=f"OPENROUTER_MODEL ({os.environ.get('OPENROUTER_MODEL','qwen/qwen3-coder:free')}):",
+        ).run()
+        if git_token:
+            os.environ["GIT_TOKEN"] = git_token
+        if open_token:
+            os.environ["OPENROUTER_TOKEN"] = open_token
+        if model:
+            os.environ["OPENROUTER_MODEL"] = model
+        with open(".env", "w", encoding="utf-8") as f:
+            if os.environ.get("GIT_TOKEN"):
+                f.write(f"GIT_TOKEN={os.environ['GIT_TOKEN']}\n")
+            if os.environ.get("OPENROUTER_TOKEN"):
+                f.write(f"OPENROUTER_TOKEN={os.environ['OPENROUTER_TOKEN']}\n")
+            if os.environ.get("OPENROUTER_MODEL"):
+                f.write(f"OPENROUTER_MODEL={os.environ['OPENROUTER_MODEL']}\n")
+        message_dialog(title="Config", text="Tokens saved").run()
+
+    def show_monitoring(self) -> None:
+        """Open MonitoringDashboard in terminal."""
+        def _open() -> None:
+            MonitoringDashboard(self.cli).show()
+
+        run_in_terminal(_open)
+
     def handle_choice(self, choice: str | None) -> None:
         if choice == "projects":
             self.projects_menu()
         elif choice == "hive":
             self.hive_menu()
+        elif choice == "monitor":
+            self.show_monitoring()
+        elif choice == "tokens":
+            self.configure_tokens()
         elif choice == "advanced":
             self.launch_manager_menu()
         elif choice == "about":
