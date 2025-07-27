@@ -1,3 +1,7 @@
+## 2025-07-30 – run_flo.py
+Hauptmenü um Monitoring und Token Setup erweitert. Neue Methoden `configure_tokens`
+und `show_monitoring` implementiert. Menü zeigt jetzt sieben Optionen.
+
 ## 2025-07-28 – setup_manager.py
 Logging erweitert und Abhängigkeitsprüfung aktualisiert (screen, claude-flow Version). .env-Warnung und Default-Ausgabe.
 

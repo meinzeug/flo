@@ -5,6 +5,12 @@
 ### 2025-07-29 TUI scroll fix
 - _run_task now moves cursor to the end after inserting text so new log output
   is immediately visible in the FloTUI window.
+### 2025-07-30 FloTUI menu update
+- Added MonitoringDashboard and token setup as dedicated options in the main
+  menu.
+- Implemented `configure_tokens` and `show_monitoring` methods in run_flo.py.
+- Main menu now lists Projects, Hive, Monitoring, Token Setup, Advanced, About
+  and Exit.
 ### 2025-07-27 Auto dependency install
 - New ensure_package helper installs missing packages at runtime.
 

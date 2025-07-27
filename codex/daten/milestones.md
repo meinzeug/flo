@@ -54,12 +54,12 @@
 - [ ] Erweiterbare Menüstruktur mit dynamischer Feature-Erkennung
 
 ## 08 – FloTUI (Text User Interface)
-- [ ] Start über `run_flo.py` ohne Parameter
-- [ ] Layout: Header, Menüleiste, Ausgabefeld, Statuszeile
-- [ ] Tastaturbindung: ESC/F10 (Exit), F1 (Hilfe)
-- [ ] Module:
-  - Projects, Hive, Advanced, Token Setup, About
-- [ ] `ProjectManagerTUI` erweitert CLI-Funktionen grafisch
+- [x] Start über `run_flo.py` ohne Parameter
+- [x] Layout: Header, Menüleiste, Ausgabefeld, Statuszeile
+- [x] Tastaturbindung: ESC/F10 (Exit), F1 (Hilfe)
+- [x] Module:
+  - Projects, Hive, Monitoring, Token Setup, Advanced, About
+- [x] `ProjectManagerTUI` erweitert CLI-Funktionen grafisch
 
 ## 09 – Self-Healing & Monitoring
 - [ ] `monitor_and_self_heal`:
