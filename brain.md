@@ -49,3 +49,4 @@
 - Each action triggers create/list/monitor or spawn/status/sessions.
 - Updated brain.md with new section.
 \n### 2025-07-27 Final tweaks\n- Added "About" option to main menu with info dialog.\n- Updated handle_choice and new show_about method.\n
+\n### 2025-07-27 Help and spinner\n- Added F1 help dialog and F10 exit shortcut in FloTUI.\n- Implemented spinner in _run_task to show activity.\n- Header now mentions F1 help.
