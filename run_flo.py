@@ -101,6 +101,7 @@ class FloTUI:
                 ("projects", "Projects"),
                 ("hive", "Hive"),
                 ("advanced", "Advanced"),
+                ("about", "About"),
                 ("exit", "Exit"),
             ]
         )
@@ -149,6 +150,8 @@ class FloTUI:
             self.hive_menu()
         elif choice == "advanced":
             self.launch_manager_menu()
+        elif choice == "about":
+            self.show_about()
         else:
             self.app.exit()
 
@@ -237,6 +240,14 @@ class FloTUI:
             ProjectManagerTUI(self.pm).run()
 
         run_in_terminal(_open)
+
+    def show_about(self) -> None:
+        """Display information about the TUI."""
+        message = (
+            "Flo TUI\n\n"
+            "A simple terminal user interface for controlling Claude-Flow."
+        )
+        message_dialog(title="About Flo", text=message).run()
 
     def run(self) -> None:
         self.app.run()
