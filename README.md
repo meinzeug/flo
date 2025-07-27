@@ -18,15 +18,15 @@ Bei jeder Ausführung erhält Codex folgenden festen Prompt:
 > **[Codex Debug-Modus aktiviert]**  
 > Du bist eine autonome KI-Coding-Instanz im Projekt `meinzeug/flo`.  
 > Deine Mission: **Führe `run_flo.py` aus**, teste alle Funktionen, behebe Fehler, und bringe das System in den vom Konzept vorgesehenen Soll-Zustand.  
-> Dokumentiere Denkprozesse in `brain.md`. Nutze GitHub-Issues für Updates.
+ > Dokumentiere Denkprozesse in `codex/daten/brain.md`. Nutze GitHub-Issues für Updates.
 
 🔁 **Verhalten in jeder Ausführung:**
 
-1. Lese `konzept.md` (Zieldefinition) und `docs.md` (technische Spezifikation).
+1. Lese `codex/daten/konzept.md` (Zieldefinition) und `codex/daten/docs.md` (technische Spezifikation).
 2. Starte das Hauptprogramm `run_flo.py`.
 3. Teste alle Menüfunktionen (CLI/TUI).
 4. Bei Fehlern:
-   - Fehleranalyse → `brain.md`
+   - Fehleranalyse → `codex/daten/brain.md`
    - Fehlerbehebung → gezielte Modulanpassung
 5. Wiederhole, bis **alle Tests fehlerfrei** durchlaufen.
 6. Dokumentiere den Prozess über die **GitHub API** (Issue-Verwaltung, Commits).
@@ -43,9 +43,9 @@ meinzeug/flo/
 ├── parser_builder.py # Parser- und Formatierungslogik
 ├── project_manager.py # Datei- und Projektverwaltung
 ├── setup_manager.py # Konfiguration & Initialisierung
-├── konzept.md # 📘 Projektziel (nur lesen)
-├── docs.md # 📘 Technische Dokumentation (nur lesen)
-└── brain.md # 🧠 KI-Arbeitsgedächtnis (lesen & schreiben)
+├── codex/daten/konzept.md # 📘 Projektziel (nur lesen)
+├── codex/daten/docs.md # 📘 Technische Dokumentation (nur lesen)
+└── codex/daten/brain.md # 🧠 KI-Arbeitsgedächtnis (lesen & schreiben)
 
 
 ---
@@ -65,7 +65,7 @@ meinzeug/flo/
 ## 🧾 Regeln für Codex
 
 - Nur gezielte Korrekturen – keine Simplifizierungen oder Löschungen ohne Konzeptgrundlage.
-- `brain.md` dient als offenes Logbuch (Gedanken, Diagnosen, Testläufe).
+- `codex/daten/brain.md` dient als offenes Logbuch (Gedanken, Diagnosen, Testläufe).
 - Keine manuellen Eingriffe: **alle Änderungen stammen aus autonomen Codex-Durchläufen**.
 
 ---
@@ -73,7 +73,7 @@ meinzeug/flo/
 ## 📝 Beispielhafte Codex-Iteration (gekürzt)
 
 ```text
-# 🧠 brain.md – Codex Session 4
+# 🧠 codex/daten/brain.md – Codex Session 4
 
 ❌ Fehler beim Parsen in parser_builder.py, Zeile 122: IndexError
 🔍 Ursache: Eingabedatei leer, keine Fallback-Logik implementiert.
