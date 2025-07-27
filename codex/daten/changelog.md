@@ -1,3 +1,6 @@
+## 2025-07-27 – run_flo.py
+Automatische Nachinstallation fehlender Pakete via ensure_package.
+
 ## 2025-07-27 – requirements.txt
 Prompt_toolkit als TUI-Abhängigkeit dokumentiert.
 

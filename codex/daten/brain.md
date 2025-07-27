@@ -1,3 +1,6 @@
+### 2025-07-27 Auto dependency install
+- New ensure_package helper installs missing packages at runtime.
+
 ### 2025-07-27 Dependency fix
 - Added requirements.txt to document prompt_toolkit dependency after start failure.
 

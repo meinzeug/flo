@@ -13,6 +13,24 @@ import threading
 import itertools
 import time
 import os
+
+import subprocess
+
+
+def ensure_package(pkg_name: str) -> None:
+    """Import ``pkg_name`` and install via pip if missing."""
+    try:
+        __import__(pkg_name)
+    except ModuleNotFoundError:
+        print(f"\U0001F4E6 Package '{pkg_name}' not found. Installing…")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg_name])
+        print(f"\u2714 Installed '{pkg_name}'")
+        globals()[pkg_name] = __import__(pkg_name)
+
+
+# Fallback for prompt_toolkit in minimal environments
+ensure_package("prompt_toolkit")
+
 from contextlib import redirect_stdout
 from pathlib import Path
 from typing import List, Optional
