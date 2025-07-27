@@ -2,6 +2,9 @@
 - Extended SetupManager to log to flow_autogen.log.
 - Added checks for claude-flow version, screen command, and missing .env.
 - Each step now uses _log helper for unified output.
+### 2025-07-29 TUI scroll fix
+- _run_task now moves cursor to the end after inserting text so new log output
+  is immediately visible in the FloTUI window.
 ### 2025-07-27 Auto dependency install
 - New ensure_package helper installs missing packages at runtime.
 
